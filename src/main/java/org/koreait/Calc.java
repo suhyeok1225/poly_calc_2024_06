@@ -13,14 +13,22 @@ public class Calc {
         if (needToMinus) {
             bits = exp.split(" \\- ");
         }
+
         int a = Integer.parseInt(bits[0]);
         int b = Integer.parseInt(bits[1]);
+        int c = 0;
 
-        if (needToPlus) {
-            return a + b;
-        } else if (needToMinus) {
-            return a - b;
+        if(bits.length > 2) {
+            c = Integer.parseInt(bits[2]);
         }
+        if(needToPlus){
+            return a + b + c;
+        } else if (needToMinus) {
+            return a - b + c;
+
+        }
+
+
         throw new RuntimeException("해석불가");
 
     }
