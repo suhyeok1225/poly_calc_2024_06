@@ -26,9 +26,9 @@ public class CalcTests {
     }
 
     @Test
-    @DisplayName("1000 + 200 == 1200")
+    @DisplayName("50 - 30 == 20")
     void t4() {
-        assertThat(Calc.run("1000 + 200")).isEqualTo(1200);
+        assertThat(Calc.run("50 - 30")).isEqualTo(20);
     }
 
 }
