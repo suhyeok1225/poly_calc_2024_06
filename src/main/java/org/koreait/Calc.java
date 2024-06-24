@@ -3,34 +3,23 @@ package org.koreait;
 public class Calc {
     public static int run(String exp) {
 
-        boolean needToPlus = exp.contains("+");
-        boolean needToMinus = exp.contains("-");
-        String[] bits = null;
-
-        if (needToPlus) {
-            bits = exp.split(" \\+ ");
-        }
-        if (needToMinus) {
-            bits = exp.split(" \\- ");
-        }
-
+        exp = exp.replaceAll("- ", "+ -");
+        String[] bits = exp.split(" \\+ ");
+        System.out.println(exp);
         int a = Integer.parseInt(bits[0]);
         int b = Integer.parseInt(bits[1]);
         int c = 0;
 
-        if(bits.length > 2) {
+        if (bits.length > 2) {
             c = Integer.parseInt(bits[2]);
         }
-        if(needToPlus){
-            return a + b + c;
-        } else if (needToMinus) {
-            return a - b + c;
 
-        }
+        return a + b + c;
 
 
-        throw new RuntimeException("해석불가");
+        //throw new RuntimeException("해석불가");
 
     }
-
 }
+
+
