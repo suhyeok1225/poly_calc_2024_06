@@ -49,4 +49,10 @@ public class CalcTests {
         assertThat(Calc.run("10 - 10 - 10 - 10 + 10 + 10 - 10")).isEqualTo(-10);
     }
 
+    @Test
+    @DisplayName("10 * 10 * 10 == 1000")
+    void t8() {
+        assertThat(Calc.run("10 * 10 * 10")).isEqualTo(1000);
+    }
+
 }

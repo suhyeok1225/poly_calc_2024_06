@@ -3,20 +3,27 @@ package org.koreait;
 public class Calc {
     public static int run(String exp) {
 
-        exp = exp.replaceAll("- ", "+ -");
-        String[] bits = exp.split(" \\+ ");
+        boolean needToMul = exp.contains("*");
+        boolean needToPlus = exp.contains("+");
+        if (needToPlus) {
+            exp = exp.replaceAll("- ", "+ -");
+            String[] bits = exp.split(" \\+ ");
 
-        int sum = 0;
+            int sum = 0;
 
-        for (int i = 0; i < bits.length; i++) {
-            sum += Integer.parseInt(bits[i]);
+            for (int i = 0; i < bits.length; i++) {
+                sum += Integer.parseInt(bits[i]);
+            }
+            return sum;
+        } else if (needToMul) {
+            String[] bits = exp.split(" \\* ");
+            int mul = 1;
+            for (int i = 0; i < bits.length; i++) {
+                mul *= Integer.parseInt(bits[i]);
+            }
+            return mul;
         }
-
-
-        return sum;
-
-        //throw new RuntimeException("해석불가");
-
+        throw new RuntimeException("해석불가");
     }
 }
 
