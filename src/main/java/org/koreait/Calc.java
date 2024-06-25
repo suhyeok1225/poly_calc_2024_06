@@ -1,18 +1,26 @@
 package org.koreait;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class Calc {
     public static int run(String exp) {
 
+        if (!exp.contains(" ")) return Integer.parseInt(exp);
         boolean needToMul = exp.contains("*");
-        boolean needToPlus = exp.contains("+");
+        boolean needToPlus = exp.contains("+") || exp.contains(" - ");
         boolean needToCoper = needToMul && needToPlus;
 
         if (needToCoper) {
             String[] bits = exp.split(" \\+ ");
 
-            return Integer.parseInt(bits[0]) + run(bits[1]);
-        }
-        if (needToPlus) {
+            String newExp = Arrays.stream(bits).
+                    mapToInt(Calc::run).
+                    mapToObj(e -> e + "").
+                    collect(Collectors.joining(" + "));
+
+            return run(newExp);
+        } else if (needToPlus) {
             exp = exp.replaceAll("- ", "+ -");
             String[] bits = exp.split(" \\+ ");
             int sum = 0;

@@ -72,5 +72,5 @@ public class CalcTests {
     void t11() {
         assertThat(Calc.run("20 + 10 + 5 * 2")).isEqualTo(40);
     }
-
+//
 }
