@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 public class Calc {
     public static int run(String exp) {
 
-        if (!exp.contains(" ")) return Integer.parseInt(exp);
+        exp = Brackets(exp);
         boolean needToMul = exp.contains("*");
         boolean needToPlus = exp.contains("+") || exp.contains(" - ");
         boolean needToCoper = needToMul && needToPlus;
+
+
 
         if (needToCoper) {
             String[] bits = exp.split(" \\+ ");
@@ -37,6 +39,13 @@ public class Calc {
             return mul;
         }
         throw new RuntimeException("해석불가");
+    }
+
+    private static String Brackets(String exp) {
+        if(exp.charAt(0) == '(' && exp.charAt(exp.length()-1) == ')'){
+            exp = exp.substring(1, exp.length()-1);
+        }
+        return exp;
     }
 }
 
