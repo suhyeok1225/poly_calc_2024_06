@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 public class Calc {
     public static int run(String exp) {
 
-        exp = exp.trim();
-        exp = Brackets(exp);
+        exp = exp.trim(); //공백 제거
+        exp = Brackets(exp); //괄호 처리
         if (!exp.contains(" ")) return Integer.parseInt(exp);
 
-        boolean needToMul = exp.contains("*"); // *을 포함하면 참
-        boolean needToPlus = exp.contains("+") || exp.contains(" - "); //+를 포함 or -를 포함하면 참
-        boolean needToCoper = needToMul && needToPlus; // *를 포함 and 플러스를 포함하면 참
-        boolean needToSplit = exp.contains("(") && exp.contains(")"); //( and ) 기호를 포함하면 참
+        boolean needToMul = exp.contains("*"); // 곱셈 연산자 여부 확인
+        boolean needToPlus = exp.contains("+") || exp.contains(" - "); // 덧셈 또는 뺄셈 연산자 여부 확인
+        boolean needToCoper = needToMul && needToPlus; // 곱셈과 덧셈/뺄셈 모두 포함 여부 확인
+        boolean needToSplit = exp.contains("(") && exp.contains(")"); // 괄호 여부 확인
 
         if (needToSplit) {
             int bracketsCount = 0; //괄호의 쌍을 추적
