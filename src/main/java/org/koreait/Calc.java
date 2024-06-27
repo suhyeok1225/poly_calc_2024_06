@@ -9,13 +9,16 @@ public class Calc {
     public static int runCallCount = 0;
 
     public static int run(String exp) {
-
-        exp = exp.trim(); // 양 옆의 쓸데없는 공백 제거
-        // 괄호 제거
+        runCallCount++;
+        exp = exp.trim();
         exp = stripOuterBrackets(exp);
-        if (isCaseMinusBracket(exp)){
-            exp = exp.substring(1) + " * -1";
+
+        int[] pos = null;
+        while ((pos = findCaseMinusBracket(exp)) != null) { // 대입은 값으로 친다.
+            exp = changeMinusBracket(exp, pos[0], pos[1]);
         }
+        exp = stripOuterBrackets(exp);
+
         if (debug) {
             System.out.printf("exp(%d) : %s\n", runCallCount, exp);
         }
@@ -58,33 +61,43 @@ public class Calc {
         }
         throw new RuntimeException("해석 불가 : 올바른 계산식이 아니야");
     }
-    private static boolean isCaseMinusBracket(String exp) {
-        // -( 로 시작하는지?
-        if (exp.startsWith("-(") == false) return false;
 
-        // 괄호로 감싸져 있는지?
-        int bracketsCount = 0;
+    private static String changeMinusBracket(String exp, int startPos, int endPos) {
+        String head = exp.substring(0, startPos);
+        String body = "(" + exp.substring(startPos + 1, endPos + 1) + " * -1)";
+        String tail = exp.substring(endPos + 1);
+        exp = head + body + tail;
+        return exp;
+    }
 
-        for (int i = 0; i < exp.length(); i++) {
-            char c = exp.charAt(i);
+    private static int[] findCaseMinusBracket(String exp) {
+        for (int i = 0; i < exp.length() - 1; i++) {
+            if (exp.charAt(i) == '-' && exp.charAt(i + 1) == '(') {
 
-            if (c == '(') {
-                bracketsCount++;
-            } else if (c == ')') {
-                bracketsCount--;
-            }
-            if (bracketsCount == 0) {
-                if (exp.length() - 1 == i) return true;
+                int bracketsCount = 1;
+
+                for (int j = i + 2; j < exp.length(); j++) {
+                    char c = exp.charAt(j);
+                    if (c == '(') {
+                        bracketsCount++;
+                    }else if (c == ')') {
+                        bracketsCount--;
+                    }
+                    if (bracketsCount == 0) {
+                        return new int[]{i, j};
+                    }
+                }
             }
         }
-
-        return false;
+        return null;
     }
+
     private static int findSplitPointIndex(String exp) {
         int index = findSplitPointIndexBy(exp, '+');
         if (index >= 0) return index;
         return findSplitPointIndexBy(exp, '*');
     }
+
     private static int findSplitPointIndexBy(String exp, char findChar) {
         int bracketsCount = 0;
         for (int i = 0; i < exp.length(); i++) {
@@ -99,14 +112,28 @@ public class Calc {
         }
         return -1;
     }
+
     private static String stripOuterBrackets(String exp) {
-        int outerBracketsCount = 0;
-        while (exp.charAt(outerBracketsCount) == '(' && exp.charAt(exp.length() - 1 - outerBracketsCount) == ')') {
-            outerBracketsCount++;
+        if (exp.charAt(0) == '(' && exp.charAt(exp.length() - 1) == ')') {
+            int bracketsCount = 0;
+
+            for (int i = 0; i < exp.length(); i++) {
+                if (exp.charAt(i) == '(') {
+                    bracketsCount++;
+                } else if (exp.charAt(i) == ')') {
+                    bracketsCount--;
+                }
+
+                if (bracketsCount == 0) {
+                    if (exp.length() == i + 1) {
+                        return stripOuterBrackets(exp.substring(1, exp.length() - 1));
+                    }
+
+                    return exp;
+                }
+            }
         }
-        if (outerBracketsCount == 0) return exp;
-        return exp.substring(outerBracketsCount, exp.length() - outerBracketsCount);
+            return exp;
+        }
+
     }
-}
-
-
