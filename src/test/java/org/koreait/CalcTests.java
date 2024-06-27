@@ -108,4 +108,10 @@ public class CalcTests {
     void t17() {
         assertThat(Calc.run("10 + (10 + 5)")).isEqualTo(25);
     }
+
+    @Test
+    @DisplayName("-(10 + 5) == -15")
+    void t18() {
+        assertThat(Calc.run("-(10 + 5)")).isEqualTo(-15);
+    }
 }
