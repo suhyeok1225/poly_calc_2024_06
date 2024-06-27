@@ -16,28 +16,14 @@ public class Calc {
         boolean needToSplit = exp.contains("(") && exp.contains(")"); // 괄호 여부 확인
 
         if (needToSplit) {
-            int bracketsCount = 0; //괄호의 쌍을 추적
-            int splitIndex = -1; //수식 나눌 위치 저장
+            int splitPointIndex = findSplitPointIndex(exp);
+            String firstExp = exp.substring(0, splitPointIndex);
+            String secondExp = exp.substring(splitPointIndex + 1);
 
-            for (int i = 0; i < exp.length(); i++) {
-                if (exp.charAt(i) == '(') {
-                    bracketsCount++; //여는 괄호 찾으면 증가
-                } else if (exp.charAt(i) == ')') {
-                    bracketsCount--; //닫는 괄호 찾으면 감소
-                }
-                if (bracketsCount == 0) {
-                    splitIndex = i; //여는 괄호와 닫는 괄호의 수가 같아지는 위치 찾음
-                    break;
-                }
-            }
-
-            String first = exp.substring(0, splitIndex + 1); //괄호 쌍까지의 부분 수식
-            String second = exp.substring(splitIndex + 4); //괄호 쌍 뒤의 나머지 수식
-            char operationCode = exp.charAt(splitIndex + 2); //연산자
-            exp = Calc.run(first) + " " + operationCode + " " + Calc.run(second); //부분 문자열 계산
+            char operator = exp.charAt(splitPointIndex);
+            exp = Calc.run(firstExp) + " " + operator + " " + Calc.run(secondExp); //부분 문자열 계산
             return Calc.run(exp);
-        }
-        else if (needToCoper) {
+        } else if (needToCoper) {
             String[] bits = exp.split(" \\+ "); //문자열 bits의 +를 무시한다.
 
             String newExp = Arrays.stream(bits). //문자열 newExp에 bits문자열을 넣는다.
@@ -46,8 +32,7 @@ public class Calc {
                     collect(Collectors.joining(" + ")); //지정된 +문자를 사용하여 결합한다.
 
             return run(newExp); //재귀함수로 run메서드에 newExp 값을 넣어서 실행
-        }
-        else if (needToPlus) {
+        } else if (needToPlus) {
             exp = exp.replaceAll("- ", "+ -"); //-기호를 + - 로 대체한다.
             String[] bits = exp.split(" \\+ "); //문자열 bits의 +를 무시한다.
             int sum = 0;
@@ -55,8 +40,7 @@ public class Calc {
                 sum += Integer.parseInt(bits[i]); //bits 문자열 0번째 부터 마지막 번째까지 더한다.
             }
             return sum;
-        }
-        else if (needToMul) {
+        } else if (needToMul) {
             String[] bits = exp.split(" \\* ");
             int mul = 1;
             for (int i = 0; i < bits.length; i++) {
@@ -67,20 +51,45 @@ public class Calc {
 
 
         throw new RuntimeException("해석불가");
-}
-
-private static String Brackets(String exp) {
-
-    int bracketsCount = 0;
-    while (exp.charAt(bracketsCount) == '(' && //계산식 앞에 괄호가 있을 때 and
-            exp.charAt(exp.length() - 1 - bracketsCount) == ')') // 계산식 맨뒤에 괄호가 있을 때
-    {
-        bracketsCount++; //괄호가 있을 때 마다 값을 증가시킨다.
     }
-    if (bracketsCount == 0) return exp; //괄호가 없으면 그대로 출력
-    return exp.substring(bracketsCount, exp.length() - bracketsCount);
-    // 괄호가 있으면 괄호 잘라서 출력 substring(시작 +1 부터, 끝 사이의 문자열 리턴)
-}
+    private static int findSplitPointIndex(String exp) {
+        int index = findSplitPointIndexBy(exp, '+');
+
+        if (index >= 0) return index;
+
+        return findSplitPointIndexBy(exp, '*');
+    }
+
+    private static int findSplitPointIndexBy(String exp, char findChar) {
+        int brackesCount = 0;
+
+        for (int i = 0; i < exp.length(); i++) {
+            char c = exp.charAt(i);
+
+            if (c == '(') {
+                brackesCount++;
+            } else if (c == ')') {
+                brackesCount--;
+            } else if (c == findChar) {
+                if (brackesCount == 0) return i;
+            }
+        }
+        return -1;
+    }
+
+
+    private static String Brackets(String exp) {
+
+        int bracketsCount = 0;
+        while (exp.charAt(bracketsCount) == '(' && //계산식 앞에 괄호가 있을 때 and
+                exp.charAt(exp.length() - 1 - bracketsCount) == ')') // 계산식 맨뒤에 괄호가 있을 때
+        {
+            bracketsCount++; //괄호가 있을 때 마다 값을 증가시킨다.
+        }
+        if (bracketsCount == 0) return exp; //괄호가 없으면 그대로 출력
+        return exp.substring(bracketsCount, exp.length() - bracketsCount);
+        // 괄호가 있으면 괄호 잘라서 출력 substring(시작 +1 부터, 끝 사이의 문자열 리턴)
+    }
 }
 
 
